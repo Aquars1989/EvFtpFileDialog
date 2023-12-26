@@ -5,7 +5,7 @@ VisualStudioVersion = 16.0.33423.256
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EvFtpFileDialog", "EvFtpFileDialog\EvFtpFileDialog.csproj", "{817286A0-F46A-44AE-88D0-CA27FFC4E942}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EvFtpFileDialog.Test", "EvFtpFileDialog.Test\EvFtpFileDialog.Test.csproj", "{39E42590-E40B-463D-8797-6CBCEC7EE1FC}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EvFtpFileDialog.Test", "EvFtpFileDialog.Test\EvFtpFileDialog.Test.csproj", "{2B13E5E9-B18C-4C2B-A5ED-9F414546346B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -17,10 +17,10 @@ Global
 		{817286A0-F46A-44AE-88D0-CA27FFC4E942}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{817286A0-F46A-44AE-88D0-CA27FFC4E942}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{817286A0-F46A-44AE-88D0-CA27FFC4E942}.Release|Any CPU.Build.0 = Release|Any CPU
-		{39E42590-E40B-463D-8797-6CBCEC7EE1FC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{39E42590-E40B-463D-8797-6CBCEC7EE1FC}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{39E42590-E40B-463D-8797-6CBCEC7EE1FC}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{39E42590-E40B-463D-8797-6CBCEC7EE1FC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2B13E5E9-B18C-4C2B-A5ED-9F414546346B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2B13E5E9-B18C-4C2B-A5ED-9F414546346B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2B13E5E9-B18C-4C2B-A5ED-9F414546346B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2B13E5E9-B18C-4C2B-A5ED-9F414546346B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
