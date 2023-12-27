@@ -9,6 +9,7 @@ using System.Linq;
 using System.Net;
 using System.Text;
 using System.Windows.Forms;
+using static System.Windows.Forms.ListView;
 
 namespace EvFtpFileDialog.Forms
 {
@@ -135,11 +136,40 @@ namespace EvFtpFileDialog.Forms
 
         private void ftpLists_KeyPress(object sender, KeyPressEventArgs e)
         {
-            //if ((e.KeyChar >= 'a' && e.KeyChar <= 'z') || e.KeyChar >= 'A' && e.KeyChar <= 'Z')
-            //{
-            //}
+            if ((e.KeyChar >= 'a' && e.KeyChar <= 'z') || e.KeyChar >= 'A' && e.KeyChar <= 'Z')
+            {
+                string key = e.KeyChar.ToString();
+                ListViewItem matchItem = null;
+                if (ftpLists.SelectedItems.Count == 0)
+                {
+                    matchItem = FindPrefix(key, ftpLists.Groups[0].Items);
+                    if (matchItem == null)
+                        matchItem = FindPrefix(key, ftpLists.Groups[1].Items);
+                }
+                else
+                {
+                    if (ftpLists.SelectedItems[0].Group == ftpLists.Groups[0])
+                    {
+                        matchItem = FindPrefix(key, ftpLists.Groups[0].Items, ftpLists.SelectedItems[0], true);
+                        if (matchItem == null)
+                            matchItem = FindPrefix(key, ftpLists.Groups[1].Items);
+                        if (matchItem == null)
+                            matchItem = FindPrefix(key, ftpLists.Groups[0].Items, ftpLists.SelectedItems[0], false);
+                    }
+                    else
+                    {
+                        matchItem = FindPrefix(key, ftpLists.Groups[1].Items, ftpLists.SelectedItems[0], true);
+                        if (matchItem == null)
+                            matchItem = FindPrefix(key, ftpLists.Groups[0].Items);
+                        if (matchItem == null)
+                            matchItem = FindPrefix(key, ftpLists.Groups[1].Items, ftpLists.SelectedItems[0], false);
+                    }
+                }
+                if (matchItem != null)
+                    matchItem.Selected = true;
+                e.Handled = true;
+            }
         }
-
 
         private void navigationBar_Validating(object sender, CancelEventArgs e)
         {
@@ -174,6 +204,47 @@ namespace EvFtpFileDialog.Forms
             btnSelect.Enabled = e.IsSelected;
         }
 
-
+        /// <summary>
+        /// search listView with prefix, return the first match item
+        /// </summary>
+        /// <param name="prefix">prefix for search listView</param>
+        /// <param name="collection">ListViewItem collection</param>
+        /// <returns>match item</returns>
+        private ListViewItem FindPrefix(string prefix, ListViewItemCollection collection, ListViewItem current = null, bool findAfter = true)
+        {
+            if (current == null)
+            {
+                foreach (ListViewItem item in collection)
+                {
+                    if (item.SubItems[1].Text.StartsWith(prefix, StringComparison.OrdinalIgnoreCase))
+                        return item;
+                }
+            }
+            else
+            {
+                if (findAfter)
+                {
+                    bool check = false;
+                    foreach (ListViewItem item in collection)
+                    {
+                        if (check && item.SubItems[1].Text.StartsWith(prefix, StringComparison.OrdinalIgnoreCase))
+                            return item;
+                        if (item == current)
+                            check = true;
+                    }
+                }
+                else
+                {
+                    foreach (ListViewItem item in collection)
+                    {
+                        if (item == current)
+                            return null;
+                        if (item.SubItems[1].Text.StartsWith(prefix, StringComparison.OrdinalIgnoreCase))
+                            return item;
+                    }
+                }
+            }
+            return null;
+        }
     }
 }
