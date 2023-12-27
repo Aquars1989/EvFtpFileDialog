@@ -29,20 +29,143 @@ namespace EvFtpFileDialog.Forms
         /// </summary>
         private void InitializeComponent()
         {
+            System.Windows.Forms.ListViewGroup listViewGroup3 = new System.Windows.Forms.ListViewGroup("Directorys", System.Windows.Forms.HorizontalAlignment.Left);
+            System.Windows.Forms.ListViewGroup listViewGroup4 = new System.Windows.Forms.ListViewGroup("Files", System.Windows.Forms.HorizontalAlignment.Left);
+            this.ftpLists = new System.Windows.Forms.ListView();
+            this.columnType = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.columnFileName = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.columnSize = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.columnModifiedTime = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.btnSelect = new System.Windows.Forms.Button();
+            this.btnCancel = new System.Windows.Forms.Button();
+            this.navigationBar = new EvFtpFileDialog.Controls.NavigationBar();
+            this.openFileDialog1 = new System.Windows.Forms.OpenFileDialog();
             this.SuspendLayout();
+            // 
+            // ftpLists
+            // 
+            this.ftpLists.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.ftpLists.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
+            this.columnType,
+            this.columnFileName,
+            this.columnSize,
+            this.columnModifiedTime});
+            this.ftpLists.FullRowSelect = true;
+            listViewGroup3.Header = "Directorys";
+            listViewGroup3.Name = "groupDirectory";
+            listViewGroup4.Header = "Files";
+            listViewGroup4.Name = "groupFiles";
+            this.ftpLists.Groups.AddRange(new System.Windows.Forms.ListViewGroup[] {
+            listViewGroup3,
+            listViewGroup4});
+            this.ftpLists.HideSelection = false;
+            this.ftpLists.Location = new System.Drawing.Point(13, 53);
+            this.ftpLists.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.ftpLists.MultiSelect = false;
+            this.ftpLists.Name = "ftpLists";
+            this.ftpLists.Size = new System.Drawing.Size(714, 442);
+            this.ftpLists.TabIndex = 0;
+            this.ftpLists.UseCompatibleStateImageBehavior = false;
+            this.ftpLists.View = System.Windows.Forms.View.Details;
+            this.ftpLists.ItemSelectionChanged += new System.Windows.Forms.ListViewItemSelectionChangedEventHandler(this.ftpLists_ItemSelectionChanged);
+            this.ftpLists.DoubleClick += new System.EventHandler(this.ftpLists_DoubleClick);
+            this.ftpLists.KeyDown += new System.Windows.Forms.KeyEventHandler(this.ftpLists_KeyDown);
+            this.ftpLists.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.ftpLists_KeyPress);
+            // 
+            // columnType
+            // 
+            this.columnType.Text = "";
+            this.columnType.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.columnType.Width = 34;
+            // 
+            // columnFileName
+            // 
+            this.columnFileName.Text = "FileName";
+            this.columnFileName.Width = 345;
+            // 
+            // columnSize
+            // 
+            this.columnSize.Text = "Size";
+            this.columnSize.Width = 104;
+            // 
+            // columnModifiedTime
+            // 
+            this.columnModifiedTime.Text = "ModifiedTime";
+            this.columnModifiedTime.Width = 167;
+            // 
+            // btnSelect
+            // 
+            this.btnSelect.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnSelect.Enabled = false;
+            this.btnSelect.Location = new System.Drawing.Point(419, 505);
+            this.btnSelect.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.btnSelect.Name = "btnSelect";
+            this.btnSelect.Size = new System.Drawing.Size(144, 39);
+            this.btnSelect.TabIndex = 1;
+            this.btnSelect.Text = "Select (&S)";
+            this.btnSelect.UseVisualStyleBackColor = true;
+            this.btnSelect.Click += new System.EventHandler(this.btnSelect_Click);
+            // 
+            // btnCancel
+            // 
+            this.btnCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
+            this.btnCancel.Location = new System.Drawing.Point(583, 505);
+            this.btnCancel.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.btnCancel.Name = "btnCancel";
+            this.btnCancel.Size = new System.Drawing.Size(144, 39);
+            this.btnCancel.TabIndex = 2;
+            this.btnCancel.Text = "Cancel";
+            this.btnCancel.UseVisualStyleBackColor = true;
+            // 
+            // navigationBar
+            // 
+            this.navigationBar.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.navigationBar.BackColor = System.Drawing.Color.White;
+            this.navigationBar.Location = new System.Drawing.Point(13, 12);
+            this.navigationBar.Name = "navigationBar";
+            this.navigationBar.ShowStartupPath = true;
+            this.navigationBar.Size = new System.Drawing.Size(714, 33);
+            this.navigationBar.TabIndex = 3;
+            this.navigationBar.Text = "navigationBar1";
+            this.navigationBar.Validating += new System.ComponentModel.CancelEventHandler(this.navigationBar_Validating);
+            // 
+            // openFileDialog1
+            // 
+            this.openFileDialog1.FileName = "openFileDialog1";
             // 
             // FtpOpenDialogForm
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 15F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(10F, 22F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(860, 530);
+            this.CancelButton = this.btnCancel;
+            this.ClientSize = new System.Drawing.Size(740, 558);
+            this.Controls.Add(this.ftpLists);
+            this.Controls.Add(this.navigationBar);
+            this.Controls.Add(this.btnCancel);
+            this.Controls.Add(this.btnSelect);
+            this.Font = new System.Drawing.Font("Consolas", 11F);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.SizableToolWindow;
+            this.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.Name = "FtpOpenDialogForm";
-            this.Text = "Open Ftp file";
+            this.Text = "Select Ftp file";
             this.ResumeLayout(false);
 
         }
 
         #endregion
+
+        private System.Windows.Forms.ListView ftpLists;
+        private System.Windows.Forms.ColumnHeader columnFileName;
+        private System.Windows.Forms.ColumnHeader columnSize;
+        private System.Windows.Forms.ColumnHeader columnModifiedTime;
+        private System.Windows.Forms.ColumnHeader columnType;
+        private System.Windows.Forms.Button btnSelect;
+        private System.Windows.Forms.Button btnCancel;
+        private Controls.NavigationBar navigationBar;
+        private System.Windows.Forms.OpenFileDialog openFileDialog1;
     }
 }

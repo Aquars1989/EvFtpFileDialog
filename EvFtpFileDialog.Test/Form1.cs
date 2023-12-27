@@ -19,11 +19,13 @@ namespace EvFtpFileDialog.Test
             ftpOpenDialog1.FtpStartupPath = TestInfo.StartupPath;
             ftpOpenDialog1.FtpUserName = TestInfo.UserName;
             ftpOpenDialog1.FtpPassword = TestInfo.Password;
+            ftpOpenDialog1.FileName = "/";
         }
 
         private void button1_Click(object sender, EventArgs e)
         {
             ftpOpenDialog1.ShowDialog();
+            textBox1.Text = ftpOpenDialog1.FileName;
         }
     }
 }

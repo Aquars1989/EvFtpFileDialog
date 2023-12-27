@@ -25,6 +25,9 @@ namespace EvFtpFileDialog
         [Description("The password of account"), DefaultValue("")]
         public string FtpPassword { get; set; }
 
+        [Description("The result return from dialog box"), DefaultValue("")]
+        public string FileName { get; set; }
+
         public FtpOpenDialog()
         {
         }
@@ -39,9 +42,14 @@ namespace EvFtpFileDialog
 
         public DialogResult ShowDialog()
         {
-            using (FtpOpenDialogForm form = new FtpOpenDialogForm(FtpAddress, FtpStartupPath, FtpUserName, FtpPassword))
+            using (FtpOpenDialogForm form = new FtpOpenDialogForm(FtpAddress, FtpStartupPath, FtpUserName, FtpPassword, FileName))
             {
-                return form.ShowDialog();
+                DialogResult result = form.ShowDialog();
+                if (result == DialogResult.OK)
+                {
+                    FileName = form.FileName;
+                }
+                return result;
             }
         }
     }

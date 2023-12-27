@@ -31,6 +31,7 @@ namespace EvFtpFileDialog.Test
         {
             this.button1 = new System.Windows.Forms.Button();
             this.ftpOpenDialog1 = new EvFtpFileDialog.FtpOpenDialog();
+            this.textBox1 = new System.Windows.Forms.TextBox();
             this.SuspendLayout();
             // 
             // button1
@@ -45,20 +46,30 @@ namespace EvFtpFileDialog.Test
             // 
             // ftpOpenDialog1
             // 
+            this.ftpOpenDialog1.FileName = null;
             this.ftpOpenDialog1.FtpAddress = null;
             this.ftpOpenDialog1.FtpPassword = null;
             this.ftpOpenDialog1.FtpStartupPath = null;
             this.ftpOpenDialog1.FtpUserName = null;
+            // 
+            // textBox1
+            // 
+            this.textBox1.Location = new System.Drawing.Point(98, 117);
+            this.textBox1.Name = "textBox1";
+            this.textBox1.Size = new System.Drawing.Size(588, 25);
+            this.textBox1.TabIndex = 1;
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(800, 450);
+            this.Controls.Add(this.textBox1);
             this.Controls.Add(this.button1);
             this.Name = "Form1";
             this.Text = "Form1";
             this.ResumeLayout(false);
+            this.PerformLayout();
 
         }
 
@@ -66,6 +77,7 @@ namespace EvFtpFileDialog.Test
 
         private System.Windows.Forms.Button button1;
         private FtpOpenDialog ftpOpenDialog1;
+        private System.Windows.Forms.TextBox textBox1;
     }
 }
 
