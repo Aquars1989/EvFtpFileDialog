@@ -10,11 +10,16 @@ using System.Windows.Forms;
 
 namespace EvFtpFileDialog.Controls
 {
+    [ToolboxBitmap(typeof(Label))]
+    [Description("Provide a shortcut to back to above directory")]
     public partial class NavigationBar : Control
     {
         private Regex _RegexStartUp = new Regex("[^/]+.*[^/]");
         private List<string> _Directorys = new List<string>() { "" };
 
+        /// <summary>
+        /// Occurs when path is validating
+        /// </summary>
         [Description("Occurs when path is validating")]
         public new event CancelEventHandler Validating;
         protected bool OnValidating()
@@ -29,6 +34,9 @@ namespace EvFtpFileDialog.Controls
         }
 
         private bool _ShowStartupPath = false;
+        /// <summary>
+        /// Show startup path or show [root] instead
+        /// </summary>
         [Description("Show startup path or show [root] instead"), DefaultValue(false)]
         public bool ShowStartupPath
         {
@@ -41,7 +49,10 @@ namespace EvFtpFileDialog.Controls
             }
         }
 
-        [DefaultValue("")]
+        /// <summary>
+        /// Original path, can't go above from it
+        /// </summary>
+        [DefaultValue("Original path, can't go above from it")]
         public string StartupPath
         {
             get { return _Directorys[0]; }
@@ -55,16 +66,48 @@ namespace EvFtpFileDialog.Controls
             }
         }
 
+        /// <summary>
+        /// Full path
+        /// </summary>
+        [DefaultValue("Full path")]
         public string Path
         {
             get { return "/" + string.Join("/", _Directorys) + "/"; }
         }
 
-
-
+        /// <summary>
+        /// Initializes a new instance of NavigationBar
+        /// </summary>
         public NavigationBar()
         {
             InitializeComponent();
+        }
+
+        private void DirectoryClicked(object sender, EventArgs e)
+        {
+            int length = (int)((sender as Control).Tag);
+            if (_Directorys.Count <= length) return;
+
+            Stack<string> backUp = new Stack<string>();
+            while (_Directorys.Count > length)
+            {
+                backUp.Push(_Directorys.Last());
+                _Directorys.RemoveAt(_Directorys.Count - 1);
+            }
+            if (OnValidating())
+            {
+                _Directorys.AddRange(backUp);
+            }
+            else
+            {
+                RebuildItems();
+            }
+        }
+
+        protected override void OnSizeChanged(EventArgs e)
+        {
+            base.OnSizeChanged(e);
+            Relayout();
         }
 
         protected override void OnPaint(PaintEventArgs pe)
@@ -73,6 +116,9 @@ namespace EvFtpFileDialog.Controls
             base.OnPaint(pe);
         }
 
+        /// <summary>
+        /// Reinitialized path
+        /// </summary>
         public void ClearDirectory()
         {
             _Directorys.RemoveRange(1, _Directorys.Count - 1);
@@ -80,6 +126,9 @@ namespace EvFtpFileDialog.Controls
             OnValidating();
         }
 
+        /// <summary>
+        /// Go to above directory
+        /// </summary>
         public void LeaveDirectory()
         {
             if (_Directorys.Count > 1)
@@ -97,6 +146,10 @@ namespace EvFtpFileDialog.Controls
             }
         }
 
+        /// <summary>
+        /// Enter to directory
+        /// </summary>
+        /// <param name="directory">Name of directory</param>
         public void EnterDirectory(string directory)
         {
             _Directorys.Add(directory);
@@ -110,6 +163,10 @@ namespace EvFtpFileDialog.Controls
             }
         }
 
+        /// <summary>
+        /// Enter to directory[0]/directory[1]...
+        /// </summary>
+        /// <param name="directory">Names of directorys</param>
         public void EnterDirectory(IEnumerable<string> directory)
         {
             _Directorys.AddRange(directory);
@@ -126,6 +183,9 @@ namespace EvFtpFileDialog.Controls
             }
         }
 
+        /// <summary>
+        /// Rebuild labels and buttons
+        /// </summary>
         private void RebuildItems()
         {
             Controls.Clear();
@@ -162,6 +222,9 @@ namespace EvFtpFileDialog.Controls
             Refresh();
         }
 
+        /// <summary>
+        /// Rearrange all controls to fit the size
+        /// </summary>
         private void Relayout()
         {
             if (Controls.Count == 0) return;
@@ -175,33 +238,6 @@ namespace EvFtpFileDialog.Controls
                 left += control.Width;
             }
             Refresh();
-        }
-
-        private void DirectoryClicked(object sender, EventArgs e)
-        {
-            int length = (int)((sender as Control).Tag);
-            if (_Directorys.Count <= length) return;
-
-            Stack<string> backUp = new Stack<string>();
-            while (_Directorys.Count > length)
-            {
-                backUp.Push(_Directorys.Last());
-                _Directorys.RemoveAt(_Directorys.Count - 1);
-            }
-            if (OnValidating())
-            {
-                _Directorys.AddRange(backUp);
-            }
-            else
-            {
-                RebuildItems();
-            }
-        }
-
-        protected override void OnSizeChanged(EventArgs e)
-        {
-            base.OnSizeChanged(e);
-            Relayout();
         }
     }
 }
