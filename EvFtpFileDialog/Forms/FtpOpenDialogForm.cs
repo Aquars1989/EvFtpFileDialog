@@ -42,13 +42,22 @@ namespace EvFtpFileDialog.Forms
             {
                 string[] startupParts = startupPath.Split(new char[] { '/' }, StringSplitOptions.RemoveEmptyEntries);
                 string[] fileNameParts = fileName.Split(new char[] { '/' }, StringSplitOptions.RemoveEmptyEntries);
+                if (fileNameParts.Length == 0)
+                {
+                    LoadDirectory();
+                    return;
+                }
+
                 List<string> directorys = new List<string>();
                 for (int i = 0; i < fileNameParts.Length - 1; i++)
                 {
                     if (i < startupParts.Length)
                     {
                         if (!startupParts[i].Equals(fileNameParts[i], StringComparison.OrdinalIgnoreCase))
-                            break;
+                        {
+                            LoadDirectory();
+                            return;
+                        }
                     }
                     else
                     {
@@ -56,16 +65,13 @@ namespace EvFtpFileDialog.Forms
                     }
                 }
                 navigationBar.EnterDirectory(directorys);
-                if (directorys.Count > 0)
+                string file = fileNameParts[fileNameParts.Length - 1];
+                foreach (ListViewItem item in ftpLists.Items)
                 {
-                    string file = fileNameParts[fileNameParts.Length - 1];
-                    foreach (ListViewItem item in ftpLists.Items)
+                    if (item.Group == ftpLists.Groups[1] && item.SubItems[1].Text.Equals(file, StringComparison.OrdinalIgnoreCase))
                     {
-                        if (item.Group == ftpLists.Groups[1] && item.SubItems[1].Text.Equals(file, StringComparison.OrdinalIgnoreCase))
-                        {
-                            item.Selected = true;
-                            break;
-                        }
+                        item.Selected = true;
+                        break;
                     }
                 }
             }
@@ -136,39 +142,42 @@ namespace EvFtpFileDialog.Forms
 
         private void ftpLists_KeyPress(object sender, KeyPressEventArgs e)
         {
-            if ((e.KeyChar >= 'a' && e.KeyChar <= 'z') || e.KeyChar >= 'A' && e.KeyChar <= 'Z')
+            //if ((e.KeyChar >= 'a' && e.KeyChar <= 'z') || e.KeyChar >= 'A' && e.KeyChar <= 'Z')
+            //{
+            string key = e.KeyChar.ToString();
+            ListViewItem matchItem = null;
+            if (ftpLists.SelectedItems.Count == 0)
             {
-                string key = e.KeyChar.ToString();
-                ListViewItem matchItem = null;
-                if (ftpLists.SelectedItems.Count == 0)
+                matchItem = FindPrefix(key, ftpLists.Groups[0].Items);
+                if (matchItem == null)
+                    matchItem = FindPrefix(key, ftpLists.Groups[1].Items);
+            }
+            else
+            {
+                if (ftpLists.SelectedItems[0].Group == ftpLists.Groups[0])
                 {
-                    matchItem = FindPrefix(key, ftpLists.Groups[0].Items);
+                    matchItem = FindPrefix(key, ftpLists.Groups[0].Items, ftpLists.SelectedItems[0], true);
                     if (matchItem == null)
                         matchItem = FindPrefix(key, ftpLists.Groups[1].Items);
+                    if (matchItem == null)
+                        matchItem = FindPrefix(key, ftpLists.Groups[0].Items, ftpLists.SelectedItems[0], false);
                 }
                 else
                 {
-                    if (ftpLists.SelectedItems[0].Group == ftpLists.Groups[0])
-                    {
-                        matchItem = FindPrefix(key, ftpLists.Groups[0].Items, ftpLists.SelectedItems[0], true);
-                        if (matchItem == null)
-                            matchItem = FindPrefix(key, ftpLists.Groups[1].Items);
-                        if (matchItem == null)
-                            matchItem = FindPrefix(key, ftpLists.Groups[0].Items, ftpLists.SelectedItems[0], false);
-                    }
-                    else
-                    {
-                        matchItem = FindPrefix(key, ftpLists.Groups[1].Items, ftpLists.SelectedItems[0], true);
-                        if (matchItem == null)
-                            matchItem = FindPrefix(key, ftpLists.Groups[0].Items);
-                        if (matchItem == null)
-                            matchItem = FindPrefix(key, ftpLists.Groups[1].Items, ftpLists.SelectedItems[0], false);
-                    }
+                    matchItem = FindPrefix(key, ftpLists.Groups[1].Items, ftpLists.SelectedItems[0], true);
+                    if (matchItem == null)
+                        matchItem = FindPrefix(key, ftpLists.Groups[0].Items);
+                    if (matchItem == null)
+                        matchItem = FindPrefix(key, ftpLists.Groups[1].Items, ftpLists.SelectedItems[0], false);
                 }
-                if (matchItem != null)
-                    matchItem.Selected = true;
-                e.Handled = true;
             }
+            if (matchItem != null)
+            {
+                matchItem.Selected = true;
+                matchItem.EnsureVisible();
+            }
+            e.Handled = true;
+            //}
         }
 
         private void navigationBar_Validating(object sender, CancelEventArgs e)
