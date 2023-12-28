@@ -32,7 +32,7 @@ namespace EvFtpFileDialog.Forms
             System.Windows.Forms.ListViewGroup listViewGroup1 = new System.Windows.Forms.ListViewGroup("Directorys", System.Windows.Forms.HorizontalAlignment.Left);
             System.Windows.Forms.ListViewGroup listViewGroup2 = new System.Windows.Forms.ListViewGroup("Files", System.Windows.Forms.HorizontalAlignment.Left);
             this.ftpLists = new System.Windows.Forms.ListView();
-            this.columnType = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.columnDIrectory = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnFileName = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnSize = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnModifiedTime = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
@@ -40,6 +40,7 @@ namespace EvFtpFileDialog.Forms
             this.btnCancel = new System.Windows.Forms.Button();
             this.openFileDialog1 = new System.Windows.Forms.OpenFileDialog();
             this.navigationBar = new EvFtpFileDialog.Controls.NavigationBar();
+            this.columnType = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.SuspendLayout();
             // 
             // ftpLists
@@ -48,8 +49,9 @@ namespace EvFtpFileDialog.Forms
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.ftpLists.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
-            this.columnType,
+            this.columnDIrectory,
             this.columnFileName,
+            this.columnType,
             this.columnSize,
             this.columnModifiedTime});
             this.ftpLists.FullRowSelect = true;
@@ -69,16 +71,17 @@ namespace EvFtpFileDialog.Forms
             this.ftpLists.TabIndex = 0;
             this.ftpLists.UseCompatibleStateImageBehavior = false;
             this.ftpLists.View = System.Windows.Forms.View.Details;
+            this.ftpLists.ColumnClick += new System.Windows.Forms.ColumnClickEventHandler(this.ftpLists_ColumnClick);
             this.ftpLists.ItemSelectionChanged += new System.Windows.Forms.ListViewItemSelectionChangedEventHandler(this.ftpLists_ItemSelectionChanged);
             this.ftpLists.DoubleClick += new System.EventHandler(this.ftpLists_DoubleClick);
             this.ftpLists.KeyDown += new System.Windows.Forms.KeyEventHandler(this.ftpLists_KeyDown);
             this.ftpLists.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.ftpLists_KeyPress);
             // 
-            // columnType
+            // columnDIrectory
             // 
-            this.columnType.Text = "";
-            this.columnType.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            this.columnType.Width = 34;
+            this.columnDIrectory.Text = "";
+            this.columnDIrectory.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.columnDIrectory.Width = 34;
             // 
             // columnFileName
             // 
@@ -138,6 +141,10 @@ namespace EvFtpFileDialog.Forms
             this.navigationBar.Text = "navigationBar1";
             this.navigationBar.Validating += new System.ComponentModel.CancelEventHandler(this.navigationBar_Validating);
             // 
+            // columnType
+            // 
+            this.columnType.Text = "Type";
+            // 
             // FtpOpenDialogForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 18F);
@@ -163,10 +170,11 @@ namespace EvFtpFileDialog.Forms
         private System.Windows.Forms.ColumnHeader columnFileName;
         private System.Windows.Forms.ColumnHeader columnSize;
         private System.Windows.Forms.ColumnHeader columnModifiedTime;
-        private System.Windows.Forms.ColumnHeader columnType;
+        private System.Windows.Forms.ColumnHeader columnDIrectory;
         private System.Windows.Forms.Button btnSelect;
         private System.Windows.Forms.Button btnCancel;
         private Controls.NavigationBar navigationBar;
         private System.Windows.Forms.OpenFileDialog openFileDialog1;
+        private System.Windows.Forms.ColumnHeader columnType;
     }
 }

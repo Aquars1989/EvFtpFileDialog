@@ -1,5 +1,7 @@
-﻿using FluentFTP;
+﻿using EvFtpFileDialog.Classes;
+using FluentFTP;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -15,6 +17,7 @@ namespace EvFtpFileDialog.Forms
 {
     public partial class FtpOpenDialogForm : Form
     {
+        ListViewColumnSorter _FtpListSorter = new ListViewColumnSorter();
         private Color _DirectorysForeColor = Color.DarkOliveGreen;
         private Color _FilesForeColor = Color.DarkSlateGray;
 
@@ -36,6 +39,7 @@ namespace EvFtpFileDialog.Forms
             Password = password;
             FileName = fileName;
             navigationBar.StartupPath = startupPath;
+            ftpLists.ListViewItemSorter = _FtpListSorter;
 
             CreateConnection();
             if (!string.IsNullOrWhiteSpace(fileName))
@@ -105,6 +109,9 @@ namespace EvFtpFileDialog.Forms
             {
                 ListViewItem listItemAbove = new ListViewItem("📁") { ForeColor = _DirectorysForeColor };
                 listItemAbove.SubItems.Add(new ListViewItem.ListViewSubItem() { Text = ".." });
+                listItemAbove.SubItems.Add(new ListViewItem.ListViewSubItem() { Text = "" });
+                listItemAbove.SubItems.Add(new ListViewItem.ListViewSubItem() { Text = "" });
+                listItemAbove.SubItems.Add(new ListViewItem.ListViewSubItem() { Text = "" });
                 listItemAbove.Group = ftpLists.Groups[0];
                 ftpLists.Items.Add(listItemAbove);
             }
@@ -114,6 +121,7 @@ namespace EvFtpFileDialog.Forms
                 bool isDirectory = item.Type == FtpObjectType.Directory;
                 ListViewItem listItem = new ListViewItem(isDirectory ? "📁" : "") { ForeColor = isDirectory ? _DirectorysForeColor : _FilesForeColor };
                 listItem.SubItems.Add(new ListViewItem.ListViewSubItem() { Text = item.Name });
+                listItem.SubItems.Add(new ListViewItem.ListViewSubItem() { Text = isDirectory ? "<DIR>" : Path.GetExtension(item.Name) });
                 listItem.SubItems.Add(new ListViewItem.ListViewSubItem() { Text = isDirectory ? "<DIR>" : item.Size.ToString() });
                 listItem.SubItems.Add(new ListViewItem.ListViewSubItem() { Text = item.Modified.ToString("yyyy/MM/dd HH:mm:ss") });
                 listItem.Group = isDirectory ? ftpLists.Groups[0] : ftpLists.Groups[1];
@@ -254,6 +262,32 @@ namespace EvFtpFileDialog.Forms
                 }
             }
             return null;
+        }
+
+        private void ftpLists_ColumnClick(object sender, ColumnClickEventArgs e)
+        {
+            // Determine if clicked column is already the column that is being sorted.
+            if (e.Column == _FtpListSorter.SortColumn)
+            {
+                // Reverse the current sort direction for this column.
+                if (_FtpListSorter.Order == SortOrder.Ascending)
+                {
+                    _FtpListSorter.Order = SortOrder.Descending;
+                }
+                else
+                {
+                    _FtpListSorter.Order = SortOrder.Ascending;
+                }
+            }
+            else
+            {
+                // Set the column number that is to be sorted; default to ascending.
+                _FtpListSorter.SortColumn = e.Column;
+                _FtpListSorter.Order = SortOrder.Ascending;
+            }
+
+            // Perform the sort with these new sort options.
+            this.ftpLists.Sort();
         }
     }
 }
