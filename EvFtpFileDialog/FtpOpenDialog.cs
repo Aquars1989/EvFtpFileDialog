@@ -9,7 +9,6 @@ using System.Windows.Forms;
 
 namespace EvFtpFileDialog
 {
-    [ToolboxItem(true)]
     [ToolboxBitmap(typeof(OpenFileDialog))]
     [Description("Display a dialog box that select a file on ftp")]
     public class FtpOpenDialog : Component
@@ -54,13 +53,13 @@ namespace EvFtpFileDialog
         /// <summary>
         /// Initializes a new instance of FtpOpenDialog with ftp setting
         /// </summary>
-        public FtpOpenDialog(string address, string startupPath, string userName, string password) : base()
-        {
-            FtpAddress = address;
-            FtpStartupPath = startupPath;
-            FtpUserName = userName;
-            FtpPassword = password;
-        }
+        //public FtpOpenDialog(string address, string startupPath, string userName, string password) : base()
+        //{
+        //    FtpAddress = address;
+        //    FtpStartupPath = startupPath;
+        //    FtpUserName = userName;
+        //    FtpPassword = password;
+        //}
 
         /// <summary>
         /// Show a dialog box to choice a file on ftp, return OK if success, otherwise return Cancel 

@@ -12,3 +12,7 @@ Install it from nuget, or from github if you like it be complicated.
 
 ## Usage
 You can drag it out from toolbox and use it like a native Dialog.
+
+![image](https://i.imgur.com/uHrbQlM.png)
+
+![image](https://i.imgur.com/huLqWfu.png)

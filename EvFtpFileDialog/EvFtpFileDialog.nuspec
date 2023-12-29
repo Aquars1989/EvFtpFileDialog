@@ -10,7 +10,7 @@
     <!-- <icon>icon.png</icon> -->
     <projectUrl>https://github.com/Aquars1989/EvFtpFileDialog</projectUrl>
     <description>$description$</description>
-    <releaseNotes>first edition.</releaseNotes>
+    <releaseNotes>remove a overload of dialog, to avoid a unexpect error pop out when dropping down from toolbox</releaseNotes>
     <copyright>$copyright$</copyright>
     <tags>Ftp Dialog</tags>
     <readme>docs\README.md</readme>
