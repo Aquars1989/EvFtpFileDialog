@@ -10,6 +10,8 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using static System.Windows.Forms.ListView;
 
@@ -175,7 +177,8 @@ namespace EvFtpFileDialog.Forms
 
         private void navigationBar_Validating(object sender, CancelEventArgs e)
         {
-            e.Cancel = !LoadDirectory();
+            //e.Cancel = !LoadDirectory();
+            LoadDirectory();
         }
 
         private void btnSelect_Click(object sender, EventArgs e)
@@ -232,7 +235,7 @@ namespace EvFtpFileDialog.Forms
             this.ftpLists.Sort();
 
         }
-        
+
         /// <summary>
         /// search listView with prefix, return the first match item
         /// </summary>
@@ -281,44 +284,111 @@ namespace EvFtpFileDialog.Forms
             FtpClient = new FtpClient($"ftp://{Address}", UserName, Password);
         }
 
-        private bool LoadDirectory()
+        private void LoadDirectory()
         {
-            FtpListItem[] items;
-            try
+            LockScreen();
+            Thread threadLoad = new Thread(() =>
             {
-                items = FtpClient.GetListing($"{navigationBar.Path}");
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message);
-                return false;
-            }
+                try
+                {
+                    FtpListItem[] items = FtpClient.GetListing($"{navigationBar.Path}");
+                    RefreshFtpView(items);
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(ex.Message);
+                    NavigationRockback();
+                }
+                finally
+                {
+                    UnlockScreen();
+                }
+            });
+            threadLoad.Start();
+        }
 
+        private delegate void deleFtpListItem(FtpListItem[] items);
+        private void RefreshFtpView(FtpListItem[] items)
+        {
+            if (this.InvokeRequired)
+            {
+                this.Invoke(new deleFtpListItem(RefreshFtpView), new object[] { items });
+            }
+            else
+            {
+                ftpLists.Items.Clear();
+                if (navigationBar.Path != StartupPath)
+                {
+                    ListViewItem listItemAbove = new ListViewItem("📁") { ForeColor = _DirectorysForeColor };
+                    listItemAbove.SubItems.Add(new ListViewItem.ListViewSubItem() { Text = ".." });
+                    listItemAbove.SubItems.Add(new ListViewItem.ListViewSubItem() { Text = "" });
+                    listItemAbove.SubItems.Add(new ListViewItem.ListViewSubItem() { Text = "" });
+                    listItemAbove.SubItems.Add(new ListViewItem.ListViewSubItem() { Text = "" });
+                    listItemAbove.Group = ftpLists.Groups[0];
+                    ftpLists.Items.Add(listItemAbove);
+                }
+
+                foreach (FtpListItem item in items)
+                {
+                    bool isDirectory = item.Type == FtpObjectType.Directory;
+                    ListViewItem listItem = new ListViewItem(isDirectory ? "📁" : "") { ForeColor = isDirectory ? _DirectorysForeColor : _FilesForeColor };
+                    listItem.SubItems.Add(new ListViewItem.ListViewSubItem() { Text = item.Name });
+                    listItem.SubItems.Add(new ListViewItem.ListViewSubItem() { Text = isDirectory ? "<DIR>" : Path.GetExtension(item.Name) });
+                    listItem.SubItems.Add(new ListViewItem.ListViewSubItem() { Text = isDirectory ? "<DIR>" : item.Size.ToString() });
+                    listItem.SubItems.Add(new ListViewItem.ListViewSubItem() { Text = item.Modified.ToString("yyyy/MM/dd HH:mm:ss") });
+                    listItem.Group = isDirectory ? ftpLists.Groups[0] : ftpLists.Groups[1];
+                    ftpLists.Items.Add(listItem);
+                }
+            }
+        }
+
+        private void LockScreen()
+        {
+            if (!loadingPanel1.Visible)
+            {
+                loadingPanel1.Left = ftpLists.Left + 1;
+                loadingPanel1.Top = ftpLists.Top + 1;
+                loadingPanel1.Width = ftpLists.Width - 2;
+                loadingPanel1.Height = ftpLists.Height - 2;
+                loadingPanel1.BackgroundImage?.Dispose();
+                loadingPanel1.BackgroundImage = null;
+                Bitmap temp = new Bitmap(ftpLists.Width, ftpLists.Height);
+                ftpLists.DrawToBitmap(temp, new Rectangle(0, 0, ftpLists.Width, ftpLists.Height));
+                Bitmap image = ImageFunc.Blur(temp, 1, Color.FromArgb(150, ftpLists.BackColor));
+                temp.Dispose();
+                loadingPanel1.BackgroundImage = image;
+                loadingPanel1.Visible = true;
+            }
+            loadingPanel1.Text = "Loading";
+            loadingPanel1.Invalidate();
+            navigationBar.Enabled = false;
+            ftpLists.Enabled = false;
             btnSelect.Enabled = false;
-            ftpLists.Items.Clear();
-            if (navigationBar.Path != StartupPath)
-            {
-                ListViewItem listItemAbove = new ListViewItem("📁") { ForeColor = _DirectorysForeColor };
-                listItemAbove.SubItems.Add(new ListViewItem.ListViewSubItem() { Text = ".." });
-                listItemAbove.SubItems.Add(new ListViewItem.ListViewSubItem() { Text = "" });
-                listItemAbove.SubItems.Add(new ListViewItem.ListViewSubItem() { Text = "" });
-                listItemAbove.SubItems.Add(new ListViewItem.ListViewSubItem() { Text = "" });
-                listItemAbove.Group = ftpLists.Groups[0];
-                ftpLists.Items.Add(listItemAbove);
-            }
+        }
 
-            foreach (FtpListItem item in items)
+        private void UnlockScreen()
+        {
+            if (this.InvokeRequired)
             {
-                bool isDirectory = item.Type == FtpObjectType.Directory;
-                ListViewItem listItem = new ListViewItem(isDirectory ? "📁" : "") { ForeColor = isDirectory ? _DirectorysForeColor : _FilesForeColor };
-                listItem.SubItems.Add(new ListViewItem.ListViewSubItem() { Text = item.Name });
-                listItem.SubItems.Add(new ListViewItem.ListViewSubItem() { Text = isDirectory ? "<DIR>" : Path.GetExtension(item.Name) });
-                listItem.SubItems.Add(new ListViewItem.ListViewSubItem() { Text = isDirectory ? "<DIR>" : item.Size.ToString() });
-                listItem.SubItems.Add(new ListViewItem.ListViewSubItem() { Text = item.Modified.ToString("yyyy/MM/dd HH:mm:ss") });
-                listItem.Group = isDirectory ? ftpLists.Groups[0] : ftpLists.Groups[1];
-                ftpLists.Items.Add(listItem);
+                this.Invoke(new Action(UnlockScreen));
             }
-            return true;
+            else
+            {
+                navigationBar.Enabled = true;
+                ftpLists.Enabled = true;
+                loadingPanel1.Visible = false;
+            }
+        }
+        private void NavigationRockback()
+        {
+            if (this.InvokeRequired)
+            {
+                this.Invoke(new Action(NavigationRockback));
+            }
+            else
+            {
+                navigationBar.Rockback();
+            }
         }
     }
 }

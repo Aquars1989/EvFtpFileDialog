@@ -16,6 +16,7 @@ namespace EvFtpFileDialog.Controls
     {
         private Regex _RegexStartUp = new Regex("[^/]+.*[^/]");
         private List<string> _Directorys = new List<string>() { "" };
+        private List<string> _PreviousDirectorys = new List<string>() { "" };
 
         /// <summary>
         /// Occurs when path is validating
@@ -72,7 +73,7 @@ namespace EvFtpFileDialog.Controls
         [DefaultValue("Full path")]
         public string Path
         {
-            get { return "/" + string.Join("/", _Directorys) + "/"; }
+            get { return (string.IsNullOrWhiteSpace(StartupPath) ? "" : "/") + string.Join("/", _Directorys) + "/"; }
         }
 
         /// <summary>
@@ -88,15 +89,15 @@ namespace EvFtpFileDialog.Controls
             int length = (int)((sender as Control).Tag);
             if (_Directorys.Count <= length) return;
 
-            Stack<string> backUp = new Stack<string>();
+            _PreviousDirectorys = new List<string>(_Directorys);
             while (_Directorys.Count > length)
             {
-                backUp.Push(_Directorys.Last());
                 _Directorys.RemoveAt(_Directorys.Count - 1);
             }
             if (OnValidating())
             {
-                _Directorys.AddRange(backUp);
+                _Directorys = _PreviousDirectorys;
+                _PreviousDirectorys = null;
             }
             else
             {
@@ -133,11 +134,12 @@ namespace EvFtpFileDialog.Controls
         {
             if (_Directorys.Count > 1)
             {
-                string backUp = _Directorys.Last();
+                _PreviousDirectorys = new List<string>(_Directorys);
                 _Directorys.RemoveAt(_Directorys.Count - 1);
                 if (OnValidating())
                 {
-                    _Directorys.Add(backUp);
+                    _Directorys = _PreviousDirectorys;
+                    _PreviousDirectorys = null;
                 }
                 else
                 {
@@ -152,10 +154,12 @@ namespace EvFtpFileDialog.Controls
         /// <param name="directory">Name of directory</param>
         public void EnterDirectory(string directory)
         {
+            _PreviousDirectorys = new List<string>(_Directorys);
             _Directorys.Add(directory);
             if (OnValidating())
             {
-                _Directorys.RemoveAt(_Directorys.Count - 1);
+                _Directorys = _PreviousDirectorys;
+                _PreviousDirectorys = null;
             }
             else
             {
@@ -169,19 +173,30 @@ namespace EvFtpFileDialog.Controls
         /// <param name="directory">Names of directorys</param>
         public void EnterDirectory(IEnumerable<string> directory)
         {
+            _PreviousDirectorys = new List<string>(_Directorys);
             _Directorys.AddRange(directory);
             if (OnValidating())
             {
-                for (int i = 0; i < directory.Count(); i++)
-                {
-                    _Directorys.RemoveAt(_Directorys.Count - 1);
-                }
+                _Directorys = _PreviousDirectorys;
+                _PreviousDirectorys = null;
             }
             else
             {
                 RebuildItems();
             }
         }
+
+        /// <summary>
+        /// Resotre last change
+        /// </summary>
+        public void Rockback()
+        {
+            if (_PreviousDirectorys == null) return;
+            _Directorys = _PreviousDirectorys;
+            _PreviousDirectorys = null;
+            RebuildItems();
+        }
+
 
         /// <summary>
         /// Rebuild labels and buttons
@@ -192,9 +207,10 @@ namespace EvFtpFileDialog.Controls
             int height = 0;
             for (int i = 0; i < _Directorys.Count; i++)
             {
+                string text = i == 0 && (ShowStartupPath || string.IsNullOrWhiteSpace(StartupPath)) ? "root" : _Directorys[i];
                 Button node = new Button()
                 {
-                    Text = _Directorys[i],
+                    Text = text,
                     Tag = i + 1,
                     Size = new Size(0, 0),
                     AutoSize = true,
@@ -202,6 +218,7 @@ namespace EvFtpFileDialog.Controls
                     BackColor = BackColor,
                     TabStop = false
                 };
+
                 node.FlatAppearance.BorderSize = 0;
                 node.Click += DirectoryClicked;
                 Controls.Add(node);

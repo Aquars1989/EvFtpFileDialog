@@ -34,13 +34,14 @@ namespace EvFtpFileDialog.Forms
             this.ftpLists = new System.Windows.Forms.ListView();
             this.columnDIrectory = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnFileName = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.columnType = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnSize = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnModifiedTime = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.btnSelect = new System.Windows.Forms.Button();
             this.btnCancel = new System.Windows.Forms.Button();
             this.openFileDialog1 = new System.Windows.Forms.OpenFileDialog();
             this.navigationBar = new EvFtpFileDialog.Controls.NavigationBar();
-            this.columnType = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.loadingPanel1 = new EvFtpFileDialog.Controls.LoadingPanel();
             this.SuspendLayout();
             // 
             // ftpLists
@@ -87,6 +88,10 @@ namespace EvFtpFileDialog.Forms
             // 
             this.columnFileName.Text = "FileName";
             this.columnFileName.Width = 345;
+            // 
+            // columnType
+            // 
+            this.columnType.Text = "Type";
             // 
             // columnSize
             // 
@@ -137,13 +142,21 @@ namespace EvFtpFileDialog.Forms
             this.navigationBar.Name = "navigationBar";
             this.navigationBar.ShowStartupPath = true;
             this.navigationBar.Size = new System.Drawing.Size(714, 36);
+            this.navigationBar.StartupPath = "";
             this.navigationBar.TabIndex = 3;
             this.navigationBar.Text = "navigationBar1";
             this.navigationBar.Validating += new System.ComponentModel.CancelEventHandler(this.navigationBar_Validating);
             // 
-            // columnType
+            // loadingPanel1
             // 
-            this.columnType.Text = "Type";
+            this.loadingPanel1.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
+            this.loadingPanel1.Location = new System.Drawing.Point(207, 195);
+            this.loadingPanel1.Name = "loadingPanel1";
+            this.loadingPanel1.Size = new System.Drawing.Size(320, 141);
+            this.loadingPanel1.TabIndex = 4;
+            this.loadingPanel1.Text = "(´◓Д◔`)";
+            this.loadingPanel1.Text2 = "";
+            this.loadingPanel1.Visible = false;
             // 
             // FtpOpenDialogForm
             // 
@@ -151,6 +164,7 @@ namespace EvFtpFileDialog.Forms
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.btnCancel;
             this.ClientSize = new System.Drawing.Size(739, 545);
+            this.Controls.Add(this.loadingPanel1);
             this.Controls.Add(this.ftpLists);
             this.Controls.Add(this.navigationBar);
             this.Controls.Add(this.btnCancel);
@@ -176,5 +190,6 @@ namespace EvFtpFileDialog.Forms
         private Controls.NavigationBar navigationBar;
         private System.Windows.Forms.OpenFileDialog openFileDialog1;
         private System.Windows.Forms.ColumnHeader columnType;
+        private Controls.LoadingPanel loadingPanel1;
     }
 }
